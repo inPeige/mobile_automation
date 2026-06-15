@@ -139,7 +139,7 @@ agent --list-models
         "MOBILEMCP_DISABLE_TELEMETRY": "1",
         "MOBILE_ENGINE": "openai",
         "OPENAI_API_KEY": "sk-your-deepseek-key",
-        "OPENAI_MODEL_ID": "deepseek-chat",
+        "OPENAI_MODEL_ID": "deepseek-v4-pro",// deepseek-v4-pro
         "OPENAI_BASE_URL": "https://api.deepseek.com/v1"
       }
     }
