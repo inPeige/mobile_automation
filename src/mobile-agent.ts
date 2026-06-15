@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
-import { MOBILE_MCP_SERVER, MOBILE_MODEL_ID } from "./config.js";
+import { ENGINE, MOBILE_MCP_SERVER, MOBILE_MODEL_ID } from "./config.js";
 import { buildMobileTaskPrompt } from "./prompts.js";
 import { VERSION } from "./version.js";
 
@@ -193,4 +193,15 @@ export async function runMobileTask(
       error: hint,
     };
   }
+}
+
+/** Dispatch to the correct engine based on MOBILE_ENGINE env. */
+export async function runMobileTaskAuto(
+  options: MobileTaskOptions,
+): Promise<MobileTaskResult> {
+  if (ENGINE === "openai") {
+    const { runMobileTaskOpenAI } = await import("./openai-agent.js");
+    return runMobileTaskOpenAI(options);
+  }
+  return runMobileTask(options);
 }

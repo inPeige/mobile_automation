@@ -4,7 +4,8 @@
       "command": "mobile-bridge-mcp",
       "env": {
         "MOBILEMCP_DISABLE_TELEMETRY": "1",
-        "MOBILE_MODEL_ID": "composer-2.5-fast"
+        "MOBILE_MODEL_ID": "composer-2.5-fast",
+        "MOBILE_ENGINE": "cursor"
       }
     }
   }

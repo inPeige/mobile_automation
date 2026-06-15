@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "mobile-bridge": {
+      "command": "mobile-bridge-mcp",
+      "env": {
+        "MOBILEMCP_DISABLE_TELEMETRY": "1",
+        "MOBILE_ENGINE": "openai",
+        "OPENAI_API_KEY": "sk-your-api-key",
+        "OPENAI_MODEL_ID": "deepseek-chat",
+        "OPENAI_BASE_URL": "https://api.deepseek.com/v1"
+      }
+    }
+  }
+}

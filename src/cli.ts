@@ -2,7 +2,7 @@
 
 import { Command } from "commander";
 import { listMobileDevices } from "./mcp-mobile-client.js";
-import { runMobileTask } from "./mobile-agent.js";
+import { runMobileTaskAuto } from "./mobile-agent.js";
 import { PACKAGE_NAME, VERSION } from "./version.js";
 
 const program = new Command();
@@ -21,7 +21,7 @@ program
   .option("--json", "Output JSON result")
   .action(async (instruction: string, opts: { device?: string; timeout: string; json?: boolean }) => {
     const timeoutMs = Number.parseInt(opts.timeout, 10) * 1000;
-    const result = await runMobileTask({
+    const result = await runMobileTaskAuto({
       instruction,
       device: opts.device,
       timeoutMs: Number.isFinite(timeoutMs) ? timeoutMs : 300_000,

@@ -33,7 +33,15 @@ IDE（Cursor / Kiro / …）           Model A — 写代码、分析、决策
 mobile-bridge-mcp                  仅 3 个高层 tool
         │  spawn mobile-agent
         ▼
-Cursor CLI (agent) + mobile-mcp    Model B — composer-2.5-fast
+┌──────────────────────────────────────────┐
+│ 引擎: cursor（默认）                       │
+│   Cursor CLI (agent) + mobile-mcp        │
+│   Model B — composer-2.5-fast            │
+├──────────────────────────────────────────┤
+│ 引擎: openai                             │
+│   OpenAI 兼容 API + mobile-mcp            │
+│   Model B — DeepSeek / GPT-4o / 通义千问 … │
+└──────────────────────────────────────────┘
         │  adb / simctl
         ▼
 Android / iOS 设备
@@ -116,6 +124,27 @@ mobile-automation-update
 ```bash
 export MOBILE_MODEL_ID="composer-2.5-fast"
 agent --list-models
+```
+
+### 使用 OpenAI 兼容模型（DeepSeek、GPT-4o、通义千问等）
+
+设置 `MOBILE_ENGINE=openai` 并提供 API 密钥。**无需安装 Cursor CLI。**
+
+```json
+{
+  "mcpServers": {
+    "mobile-bridge": {
+      "command": "mobile-bridge-mcp",
+      "env": {
+        "MOBILEMCP_DISABLE_TELEMETRY": "1",
+        "MOBILE_ENGINE": "openai",
+        "OPENAI_API_KEY": "sk-your-deepseek-key",
+        "OPENAI_MODEL_ID": "deepseek-chat",
+        "OPENAI_BASE_URL": "https://api.deepseek.com/v1"
+      }
+    }
+  }
+}
 ```
 
 详见 [docs/zh/engines.md](./docs/zh/engines.md)。

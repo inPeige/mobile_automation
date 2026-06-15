@@ -33,7 +33,15 @@ IDE (Cursor / Kiro / …)          Model A — code, logs, decisions
 mobile-bridge-mcp                3 high-level tools only
         │  spawn mobile-agent
         ▼
-Cursor CLI (agent) + mobile-mcp  Model B — composer-2.5-fast
+┌─────────────────────────────────────────┐
+│ Engine: cursor (default)                │
+│   Cursor CLI (agent) + mobile-mcp       │
+│   Model B — composer-2.5-fast           │
+├─────────────────────────────────────────┤
+│ Engine: openai                          │
+│   OpenAI-compatible API + mobile-mcp    │
+│   Model B — DeepSeek / GPT-4o / Qwen … │
+└─────────────────────────────────────────┘
         │  adb / simctl
         ▼
 Android / iOS device
@@ -116,6 +124,27 @@ Set `MOBILE_MODEL_ID` in MCP `env` or shell:
 ```bash
 export MOBILE_MODEL_ID="composer-2.5-fast"
 agent --list-models   # see available IDs
+```
+
+### Use OpenAI-compatible models (DeepSeek, GPT-4o, Qwen, etc.)
+
+Set `MOBILE_ENGINE=openai` and provide your API key. **No Cursor CLI required.**
+
+```json
+{
+  "mcpServers": {
+    "mobile-bridge": {
+      "command": "mobile-bridge-mcp",
+      "env": {
+        "MOBILEMCP_DISABLE_TELEMETRY": "1",
+        "MOBILE_ENGINE": "openai",
+        "OPENAI_API_KEY": "sk-your-deepseek-key",
+        "OPENAI_MODEL_ID": "deepseek-chat",
+        "OPENAI_BASE_URL": "https://api.deepseek.com/v1"
+      }
+    }
+  }
+}
 ```
 
 Details: [docs/en/engines.md](./docs/en/engines.md)
