@@ -1,0 +1,51 @@
+{
+  "name": "@realsee/mobile-automation",
+  "version": "1.0.5",
+  "description": "Dual-model MCP bridge for cost-efficient mobile UI automation (mobile-mcp + Cursor CLI)",
+  "license": "MIT",
+  "author": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_ORG/mobile-automation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/YOUR_ORG/mobile-automation/issues"
+  },
+  "homepage": "https://github.com/YOUR_ORG/mobile-automation#readme",
+  "keywords": [
+    "mcp",
+    "mobile-mcp",
+    "mobile-automation",
+    "cursor",
+    "kiro",
+    "android",
+    "ios",
+    "ui-automation",
+    "model-context-protocol"
+  ],
+  "type": "module",
+  "bin": {
+    "mobile-agent": "./dist/cli.js",
+    "mobile-bridge-mcp": "./dist/bridge-server.js",
+    "mobile-automation-update": "./scripts/update-global.sh"
+  },
+  "scripts": {
+    "build": "tsc",
+    "mobile-agent": "node dist/cli.js",
+    "mobile-bridge-mcp": "node dist/bridge-server.js",
+    "install:global": "bash scripts/install-global.sh",
+    "update:global": "bash scripts/update-global.sh"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "commander": "^13.1.0",
+    "zod": "^3.24.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  }
+}
