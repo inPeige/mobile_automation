@@ -8,7 +8,7 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { z } from "zod";
 import { listMobileDevices } from "./mcp-mobile-client.js";
-import { runMobileTaskViaCli } from "./run-mobile-task-cli.js";
+import { runMobileTaskAuto } from "./mobile-agent.js";
 import { VERSION } from "./version.js";
 
 const RunTaskSchema = z.object({
@@ -116,21 +116,32 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
     }
 
     const { instruction, device, timeout_sec } = parsed.data;
-    const result = await runMobileTaskViaCli({
+    const result = await runMobileTaskAuto({
       instruction,
       device,
-      timeoutSec: timeout_sec,
+      timeoutMs: timeout_sec * 1000,
     });
 
-    return {
-      content: [
-        {
-          type: "text",
-          text: JSON.stringify(result, null, 2),
-        },
-      ],
-      isError: !result.success,
-    };
+    const content: Array<{ type: string; text?: string; data?: string; mimeType?: string; uri?: string; name?: string; description?: string; annotations?: Record<string, unknown> }> = [
+      { type: "text", text: JSON.stringify({ ...result, screenshotPaths: undefined }, null, 2) },
+    ];
+
+    // Return screenshots as resource_link — no base64 in context, IDE fetches on demand
+    if (result.screenshotPaths?.length) {
+      for (const filepath of result.screenshotPaths) {
+        const filename = filepath.split("/").pop() ?? "screenshot.png";
+        content.push({
+          type: "resource_link",
+          uri: `file://${filepath}`,
+          name: filename,
+          description: "Screenshot taken during task execution",
+          mimeType: "image/png",
+          annotations: { audience: ["user"], priority: 0.9 },
+        });
+      }
+    }
+
+    return { content, isError: !result.success };
   }
 
   return {

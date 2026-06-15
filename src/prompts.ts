@@ -13,6 +13,7 @@ Rules:
 - Start with mobile_list_available_devices when device is unknown.
 - Prefer accessibility tree (mobile_list_elements_on_screen) over blind coordinate taps.
 - Take mobile_take_screenshot when you need to verify state.
+- IMPORTANT: Always take a final screenshot after completing the task so the result is visible.
 - When finished, reply with a concise summary: success/failure, steps taken, any screenshot paths.${deviceHint}
 
 Task:

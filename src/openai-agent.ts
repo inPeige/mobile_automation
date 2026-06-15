@@ -1,5 +1,8 @@
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam, ChatCompletionTool } from "openai/resources/chat/completions";
+import { mkdirSync, writeFileSync } from "node:fs";
+import { homedir } from "node:os";
+import { join } from "node:path";
 import { withMobileMcpClient } from "./mcp-mobile-client.js";
 import { OPENAI_BASE_URL, OPENAI_MODEL_ID } from "./config.js";
 import { buildMobileTaskPrompt } from "./prompts.js";
@@ -25,9 +28,25 @@ function mcpToolsToOpenAI(tools: Array<{ name: string; description?: string; inp
   }));
 }
 
+function getScreenshotDir(): string {
+  const dir = join(homedir(), ".local/share/mobile-automation/screenshots");
+  mkdirSync(dir, { recursive: true });
+  return dir;
+}
+
+interface McpContentItem {
+  type: string;
+  text?: string;
+  data?: string;
+  mimeType?: string;
+}
+
 export async function runMobileTaskOpenAI(options: MobileTaskOptions): Promise<MobileTaskResult> {
   const { instruction, device, timeoutMs = 300_000 } = options;
   const started = Date.now();
+  const screenshotPaths: string[] = [];
+  const screenshotDir = getScreenshotDir();
+  let screenshotIdx = 0;
 
   try {
     const result = await withMobileMcpClient(async (client) => {
@@ -64,13 +83,26 @@ export async function runMobileTaskOpenAI(options: MobileTaskOptions): Promise<M
           return { success: true, status: "finished", summary: msg.content ?? "Task completed" };
         }
 
-        // Execute tool calls
         for (const tc of msg.tool_calls) {
           let toolResult: string;
           try {
             const args = JSON.parse(tc.function.arguments || "{}");
             const mcpResult = await client.callTool({ name: tc.function.name, arguments: args });
-            toolResult = JSON.stringify(mcpResult.content);
+            const contentItems = mcpResult.content as McpContentItem[] | undefined;
+
+            if (contentItems) {
+              for (const item of contentItems) {
+                if (item.type === "image" && item.data && item.mimeType) {
+                  const ext = item.mimeType.split("/")[1] || "png";
+                  const filename = `${Date.now()}-${screenshotIdx++}.${ext}`;
+                  const filepath = join(screenshotDir, filename);
+                  writeFileSync(filepath, Buffer.from(item.data, "base64"));
+                  screenshotPaths.push(filepath);
+                }
+              }
+            }
+
+            toolResult = JSON.stringify(contentItems);
           } catch (err) {
             toolResult = `Error: ${err instanceof Error ? err.message : String(err)}`;
           }
@@ -81,7 +113,12 @@ export async function runMobileTaskOpenAI(options: MobileTaskOptions): Promise<M
       return { success: false, status: "max_iterations", summary: "Reached max iterations without completion" };
     });
 
-    return { ...result, version: VERSION, durationMs: Date.now() - started };
+    return {
+      ...result,
+      version: VERSION,
+      durationMs: Date.now() - started,
+      screenshotPaths: screenshotPaths.length > 0 ? screenshotPaths : undefined,
+    };
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     return {

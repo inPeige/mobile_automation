@@ -20,6 +20,8 @@ export interface MobileTaskResult {
   runId?: string;
   durationMs?: number;
   error?: string;
+  /** File paths of screenshots taken during the task. */
+  screenshotPaths?: string[];
 }
 
 interface AgentJsonOutput {
