@@ -44,7 +44,7 @@ adb shell input tap 500 500   # 不应出现 SecurityException
 ## 全局安装
 
 ```bash
-git clone https://github.com/YOUR_ORG/mobile-automation.git
+git clone https://github.com/inPeige/mobile-automation.git
 cd mobile-automation
 bash scripts/install-global.sh
 ```
