@@ -53,7 +53,7 @@ Android / iOS device
 ### Install (global)
 
 ```bash
-git clone [https://github.com/YOUR_ORG/mobile-automation.git](https://github.com/inPeige/mobile_automation.git)
+git clone [https://github.com/inPeige/mobile-automation.git](https://github.com/inPeige/mobile_automation.git)
 cd mobile-automation
 bash scripts/install-global.sh
 ```
