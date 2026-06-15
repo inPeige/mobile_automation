@@ -53,7 +53,7 @@ Android / iOS 设备
 ### 安装（全局）
 
 ```bash
-git clone https://github.com/YOUR_ORG/mobile-automation.git
+git clone https://github.com/inPeige/mobile-automation.git
 cd mobile-automation
 bash scripts/install-global.sh
 ```
